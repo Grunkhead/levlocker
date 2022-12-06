@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+    <head>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
+        <style>
+        
+            #sample {
+                background-color: red;
+                width: 300px;
+                height: 300px;
+            }
+
+            .nav {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                height: 80px;
+                /* background-color: lightblue; */
+            }
+
+            .nav > img {
+                height: 50px;
+            }
+
+            body {
+                margin: 0px;
+            }
+
+            .btn {
+                padding: 10px;
+                text-align: center;
+                color: white;
+                border-radius: 20px;
+                text-decoration: none;
+            }
+
+            .btn-alarm {
+                background-color: red;
+            }
+
+            .content {
+                margin: 20px;
+            }
+
+            .block {
+                padding: 10px 20px 10px 20px;
+                background-color: #F3F3F3;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+
+            .block .title {
+                font-weight: 600;
+            }
+
+            hr.solid {
+                border-top: 1px solid #bbb;
+            }
+        
+        </style>
+        
+    </head>
+    <body>
+        
+        <!-- <div class="nav">
+            <img src="https://i.ibb.co/DQrY2J3/logo.png">
+            <a class="btn btn-alarm" href="Stop alarm">Stop alarm</a>
+        </div> -->
+
+        <div class="content">
+            <h3 style="text-align: center;">Everything is completely fine!</h3>
+
+            <div class="block">
+                <div class="title">
+                    Temperature (live)
+                </div>
+                <hr class="solid">
+                Main sensor: <span id="sensorOneTemperature"></span><br>
+                Backup sensor: <span id="sensorTwoTemperature"></span><br><br>
+                <div style="font-style: italic;">
+                    <b>In case of high temperatures:</b><br>
+                    If there are extreme temperatures measured (above 50 celcius) you should <a href="https://batteryuniversity.com/article/bu-304a-safety-concerns-with-li-ion">immediately</a> check your electric vehicle in case of fire.
+                </div>
+                <div style="font-style: italic;">
+                    <b>Long time storage advice:</b><br>
+                    If you store the device for a long period for example when going on holidays. We recommend to store it in a place where temperatures are between 10 - 30 celcius to <a href="https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries">prolong</a> battery lifetime. We also advice you to charge or drain the battery to 60%.
+                </div>
+            </div>
+            <div class="block">
+                <div class="title">
+                    Humidity (live)
+                </div>
+                <hr class="solid">
+                Main sensor: <span id="sensorOneHumidity"></span><br>
+                Backup sensor: <span id="sensorTwoHumidity"></span><br><br>
+                <div style="font-style: italic;">
+                    <b>Why is humidity measured?:</b><br>
+                    We measure the humidity because fire does decrease the humidity, so if the humidity suddenly drops it could mean that there is fire.
+                </div>
+            </div>
+        </div>
+
+        <!-- <div>
+            <canvas id="myChart"></canvas>
+        </div>   
+          
+        <script>
+            const labels = []
+            const data = {
+              labels, labels,
+              datasets: [{
+                label: 'Temperature',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [],
+              }]
+            };
+          
+            const config = {
+              type: 'line',
+              data: data,
+              options: {}
+            };
+
+            function addData(chart, label, data) {
+                chart.data.labels.push(label);
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(data);
+                });
+            chart.update();
+}
+        </script>
+
+        <script>
+            const myChart = new Chart(
+                document.getElementById('myChart'), config
+            );
+        </script> -->
+   
+        <script>
+            
+        var socket = io();
+
+        socket.on('data', function(data) {
+            
+            let json = JSON.parse(data)
+            
+            document.getElementById('sensorOneTemperature').innerHTML = json.dht11[0].temperature+" Celcius"; 
+            document.getElementById('sensorOneHumidity').innerHTML = json.dht11[0].humidity + "%"; 
+
+            document.getElementById('sensorTwoTemperature').innerHTML = json.dht11[1].temperature+" Celcius"; 
+            document.getElementById('sensorTwoHumidity').innerHTML = json.dht11[1].humidity + "%"; 
+
+            // addData(myChart, myChart.data.labels.length, json.temperature)
+
+        });
+        
+        </script>
+        
+    </body>
+</html>
